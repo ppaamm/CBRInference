@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    align-items: center;
+}
+
+.text, .arrow, .textbox {
+    font-size: 24px; /* Large font size */
+    padding: 10px; /* Add padding for spacing */
+}
+
+.arrow {
+    margin: 0 10px; /* Add margin around the arrow */
+}
+
+.textbox {
+    width: 200px; /* Set width for the textbox */
+    font-size: 24px; /* Large font size for the textbox */
+}

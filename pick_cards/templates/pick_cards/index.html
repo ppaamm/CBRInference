@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{%  load static %}
+
+{% block content %}
+<div class = "box">
+    <div class="title-container">
+        <div class = "title">Step 1:</div>
+    </div>
+    <div class="subtitle-container">
+        <div class = "subtitle">Independent learning</div>
+    </div>
+    <div class="main-text">
+        <p>
+          Pick {{ N_CARDS }} from the deck and study them!</p>
+        <p>
+          When you feel ready, we can move on to the first test... (Feel free to use your cards during the test)</p>
+    </div>
+    <div class="button-container">
+        <form class = "Demo_questionnaire" 
+        action="{% url 'evaluation:index' session_id=session_id  quiz_id=quiz_id round_id=1%}">
+          {% csrf_token %}
+          <button type="submit">New game</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock script %}

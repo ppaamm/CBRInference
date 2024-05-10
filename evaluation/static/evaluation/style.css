@@ -1,0 +1,44 @@
+.container {
+    position: relative;
+    justify-content: center; /* Center content horizontally */
+    display: flex;
+    align-items: center;
+    margin-top: 150px;
+    margin-bottom:150px;
+}
+
+.text, .arrow, .textbox {
+    font-size: 36px; /* Large font size */
+    padding: 10px; /* Add padding for spacing */
+    position: absolute;
+}
+
+.arrow {
+    font-size: 48px;
+    position: absolute; /* Set arrow position to absolute */
+    left: 50%; /* Align arrow horizontally at the center of the container */
+    transform: translateX(-50%); /* Adjust arrow position to center it exactly */
+}
+
+.text {
+    text-align: center; /* Center text horizontally */
+    left: 0;
+    right: calc(50% + 50px); /* Adjust based on the desired space between center and right */
+}
+
+.textbox {
+    
+    font-size: 24px; /* Large font size for the textbox */
+    right: 0;
+    left: calc(50% + 50px); /* Adjust based on the desired space between center and left */
+}
+
+
+.scoretext {
+    font-size: 36px; /* Large font size */
+    padding: 10px; /* Add padding for spacing */
+}
+
+.scoretext p {
+    text-align: center;
+}

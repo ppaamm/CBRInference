@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{%  load static %}
+
+
+{% block content %}
+<div class = "box">
+    <div class="title-container">
+        <div class = "title">Rules</div>
+    </div>
+    
+    <div class="main-text">
+        <p>
+          <b>General goal:</b> The general goal of this demonstration is to show how an advanced AI teacher can help you learn complex grammar rules. 
+          In this demonstration, we chose the <i>inessive</i> case in Finnish, which is used to express the notion of being inside something.</p>
+        <p>
+          In order to see how well you master the inessive case, you will be asked {{ N_WORDS_TEST }} questions of the form "What is the inessive of 
+          the following word?". </p>
+        <p>
+          The learning will be organized in 4 short steps:</p>
+          
+        <ul>
+            <li><b>Independent learning:</b> You will pick {{ N_CARDS }} cards from the deck. Each card contains either an example of inessive, or the
+            explanations for a simple rule. </li>
+            <li><b>Initial test:</b> You pass the test a first time. To answer, use the information contained in your cards! Once the test is done, you
+            will get your score, but no feedback on your mistakes.</li>
+            <li><b>Guided learning:</b> From your answers, the AI teacher will guess the cards you picked, but also suggest a few additional cards for 
+            you to get a better understanding of the inessive case. </li>
+            <li><b>Final test:</b> You pass the test a second time. Once the test is done, you will get your score. Can the AI teacher understand what
+            you know and help you become better?</li>
+        </ul>
+    </div>
+    <div class="button-container">
+        <form class = "Demo_questionnaire" action="{% url 'pick_cards:index' %}">
+          {% csrf_token %}
+          <button type="submit">Ready? Go!</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock script %}

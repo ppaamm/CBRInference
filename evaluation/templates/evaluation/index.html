@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{%  load static %}
+
+{% block extra_css %}
+        <link rel= "stylesheet" href="{% static 'evaluation/style.css'%}">
+{% endblock %}
+
+{% block content %}
+<div class = "box">
+    <div class="title-container">
+        <div class = "title">Quiz</div>
+    </div>
+    
+    
+    <div id=quiz>
+        <div class="main-text container">
+            <div id="nominative" class="text"></div>
+            <div class="arrow">➔</div>
+            <input id="answer-textbox" type="text" class="textbox" placeholder="Your answer" required>
+        </div>
+        
+        <div class="button-container">
+            <button id="next-button"></button>
+        </div>
+        
+        <div class="button-container">
+            <button id="send-button">Finish the test</button>
+        </div>
+    </div>
+    
+    <div id="score-container">
+        <div id="score-displayer" class = "scoretext main-text"></div>
+        
+        <div class="button-container">
+            <button id="submit-button">{{ submit_button_text }}</button>
+        </div>
+    </div>
+    
+
+    <script>
+        const answers = []; 
+        
+        function addAnswer() {
+            var answerTextbox = document.getElementById('answer-textbox');
+            answers.push(answerTextbox.value);
+        }
+        
+        // JavaScript to handle the button click event
+        document.addEventListener('DOMContentLoaded', function() {
+            var questions = [
+                // List of questions (you can pass this from Django template if needed)
+                {% for question in questions %}
+                    "{{ question.nominative }}",
+                {% endfor %}
+            ];
+            
+            var correct_answers = [
+                // List of questions (you can pass this from Django template if needed)
+                {% for question in questions %}
+                    "{{ question.inessive }}",
+                {% endfor %}
+            ];
+
+            var currentQuestionIndex = 0;
+            var nominativeText = document.getElementById('nominative');
+            var nextButton = document.getElementById('next-button');
+            var sendButton = document.getElementById('send-button');
+            var submitButton = document.getElementById('submit-button');
+            var answerTextbox = document.getElementById('answer-textbox');
+            var scoreContainer = document.getElementById('score-container');
+            var quizContainer = document.getElementById('quiz');
+            var scoreDisplayer = document.getElementById('score-displayer');
+
+            function displayNextQuestion() {
+                if (currentQuestionIndex < questions.length - 1) {
+                    sendButton.style.display = 'none';
+                    scoreContainer.style.display = 'none';
+                    nextButton.innerHTML = "Next question";
+                    
+                    // Create HTML for question and input field
+                    var html = '<p>Question ' + (currentQuestionIndex + 1) + ': ' + questions[currentQuestionIndex] + '</p>';
+                    html += '<input type="text" name="answer_' + currentQuestionIndex + '" required>';
+                    // Insert HTML into question container
+                    nominativeText.innerHTML = questions[currentQuestionIndex];
+                    // Empty textbox
+                    answerTextbox.value = "";
+                } else {
+                    // Create HTML for question and input field
+                    var html = '<p>Question ' + (currentQuestionIndex + 1) + ': ' + questions[currentQuestionIndex] + '</p>';
+                    html += '<input type="text" name="answer_' + currentQuestionIndex + '" required>';
+                    // Insert HTML into question container
+                    nominativeText.innerHTML = questions[currentQuestionIndex];
+                    // Empty textbox
+                    answerTextbox.value = "";
+                    
+                    
+                    // If all questions are answered, hide button or redirect as needed
+                    nextButton.style.display = 'none';  // Hide next button
+                    sendButton.style.display = 'block';
+                    // nextButton.innerHTML = "Finish the test";
+                }
+            }
+
+            // Display first question when page loads
+            displayNextQuestion();
+
+            // Add event listener for button click
+            nextButton.addEventListener('click', function() {
+                addAnswer();
+                
+                // Increment current question index and display next question
+                currentQuestionIndex++;
+                displayNextQuestion();
+            });
+            
+            
+            
+            sendButton.addEventListener('click', function() {
+                
+                addAnswer();
+                
+                quizContainer.style.display = 'none'; 
+                scoreContainer.style.display = 'block';
+                
+                
+                var score = countEqualElements(answers, correct_answers); 
+                var N = answers.length;
+                
+                console.log(answers.length);
+                console.log(correct_answers.length);
+
+                scoreDisplayer.innerHTML = '<p>Score: ' + score + ' / ' + N + '</p>';
+                
+                
+                function countEqualElements(A, B) {
+                    if (A.length !== B.length) {
+                        throw new Error("Arrays A and B must have the same length.");
+                    }
+                
+                    let count = 0;
+                
+                    for (let i = 0; i < A.length; i++) {
+                        // Remove spaces and convert to lowercase for comparison
+                        const aTrimmed = A[i].toLowerCase().replace(/\s/g, '');
+                        const bTrimmed = B[i].toLowerCase().replace(/\s/g, '');
+                
+                        // Compare the transformed strings
+                        if (aTrimmed === bTrimmed) {
+                            count++;
+                        }
+                    }
+                
+                    return count;
+                }
+                
+            });
+            
+            
+            
+            
+            submitButton.addEventListener('click', function() {
+                
+                var new_url = '/conclusion/index';
+                var round_id = '{{ round_id }}';
+                
+                if (Number(round_id) === 1) {
+                    new_url = '/ai_process/index';
+                }
+                
+                
+                const data = {
+                    "questions": questions, 
+                    "answers": answers,
+                    "correct_answers": correct_answers
+                };
+            
+                fetch(new_url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    mode: 'same-origin',
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    window.location.href = response.url;
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+            });
+            
+            // Function to get CSRF token from cookies
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+        });
+    </script>
+
+    
+    
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock script %}
