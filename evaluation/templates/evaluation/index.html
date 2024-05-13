@@ -163,9 +163,11 @@
                 
                 var new_url = '/conclusion/index';
                 var round_id = '{{ round_id }}';
+                var quiz_id = '{{ quiz_id }}';
+                var session_id = '{{ session_id }}';
                 
                 if (Number(round_id) === 1) {
-                    new_url = '/ai_process/index';
+                    new_url = '/ai_process/index/' + session_id + '/' + quiz_id;
                 }
                 
                 

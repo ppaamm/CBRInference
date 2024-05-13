@@ -138,6 +138,12 @@ class InferenceEngine:
         return updated_proba_harmony
     
     
+    
+    def _is_valid_solution(self, precomputation: PreComputation, idx_x: int, y: str):
+        validity_no_harmony = (y in [sol[idx_x] for sol in precomputation.a_solutions[0]])
+        validity_harmony = (y in [sol[idx_x] for sol in precomputation.a_solutions[1]])
+        return validity_no_harmony or validity_harmony
+    
         
     
     def update_probas(self, precomputation: PreComputation, idx_x: int, y: str):
@@ -147,7 +153,7 @@ class InferenceEngine:
         Parameters
         ----------
         idx_x : int
-            Index of the source problem (in the global CB).
+            Index of the target problem (in the global CB).
         y : str
             Given solution.
 
@@ -156,10 +162,14 @@ class InferenceEngine:
         None.
 
         """
-        order = [precomputation.a_orders[d][idx_x] for d in range(self.n_distances)]
-        self.probas_cb = self._update_probas_cb(precomputation, idx_x, y, order)
-        self.probas_dist = self._update_probas_dist(precomputation, idx_x, y, order)
-        self.proba_harmony = self._update_proba_harmony(precomputation, idx_x, y, order)
+        
+        if self._is_valid_solution(precomputation, idx_x, y):
+            # TOOD: Fix that with a probabilitist model
+            
+            order = [precomputation.a_orders[d][idx_x] for d in range(self.n_distances)]
+            self.probas_cb = self._update_probas_cb(precomputation, idx_x, y, order)
+            self.probas_dist = self._update_probas_dist(precomputation, idx_x, y, order)
+            self.proba_harmony = self._update_proba_harmony(precomputation, idx_x, y, order)
         
         
         
@@ -281,3 +291,41 @@ def probabilistic_state_transition(x, probas_cb, dict_X, p):
     idx_x = dict_X[x]
     probas_cb[idx_x] = probas_cb[idx_x] + (1 - probas_cb[idx_x]) * p
     return probas_cb
+
+
+
+def compare_probas(probas_cb, probas_cb_user):
+    return np.sum(np.abs(probas_cb_user - probas_cb)) / probas_cb.shape[0]
+
+
+class Evaluation:
+    def __init__(self, X_test, Y_test, precomputation: PreComputation):
+        self.n_x = len(X_test)
+        self.Y_test = Y_test
+        self.precomputation = precomputation
+
+    
+    def evaluate(self, inference: InferenceEngine):
+        score = 0
+        
+        for tgt in range(self.n_x):
+            list_y = [self.Y_test[tgt]]
+            
+            order = [self.precomputation.a_orders[d][tgt] for d in range(inference.n_distances)]
+            probas = [proba_1nn_total(o, inference.probas_cb) for o in order]
+            
+            for y in list_y:
+                p = 0
+                for h in range(2):
+                    sol = self.precomputation.a_solutions[h][tgt]
+                    if y in sol:
+                        indices = [idx for idx, f in enumerate(sol) if f == y] # indexes of NN yielding solution y
+                        for v in indices:
+                            for d in range(inference.n_distances):
+                                if (h==0):
+                                    p += (1 - inference.proba_harmony) * inference.probas_dist[d] * probas[d][v]
+                                else:
+                                    p += inference.proba_harmony * inference.probas_dist[d] * probas[d][v]
+                score += p / len(list_y)
+        print("Evaluation: ", score)
+        return score / self.n_x

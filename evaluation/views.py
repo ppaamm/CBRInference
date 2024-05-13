@@ -42,7 +42,9 @@ def index(request, session_id="test", quiz_id=1, round_id=1):
         
         
         if round_id == 1:
-            return redirect("ai_process:index")
+            path = '/'.join(["ai_process/index", session_id, str(quiz_id)] )
+            print(path)
+            return redirect(path)
         else:
             return redirect("conclusion:index")
         
@@ -61,6 +63,7 @@ def index(request, session_id="test", quiz_id=1, round_id=1):
             'questions': questions,
             'total_questions': total_questions,
             'submit_button_text': submit_button_text,
+            'session_id': session_id,
             'quiz_id': quiz_id, 
             'round_id': round_id
         }

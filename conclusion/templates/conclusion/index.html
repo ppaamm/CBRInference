@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{%  load static %}
+
+{% block content %}
+<div class = "box">
+    <div class="title-container">
+        <div class = "title">Thank you for testing this demo!</div>
+    </div>
+    <div class="main-text">
+        <p>
+          So? Were the recommendations of the artificial teacher useful? 
+          Did the teacher guess your cards correctly?
+          Did you achieve a better score the second time? 
+          Don't hesitate to pass by our poster (EXK-7) to give your feedbacks on this demo!
+          </p>
+        <p>
+          Don't forget that this is stil work in progress and that we are working hard on making this teacher smarter and more useful.</p>
+    </div>
+    <div class="button-container">
+        <form class = "Demo_questionnaire" action="{% url 'intro:index' %}">
+          {% csrf_token %}
+          <button type="submit">Start again</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock script %}

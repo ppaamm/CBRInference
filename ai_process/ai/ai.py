@@ -1,7 +1,8 @@
 import csv
 import numpy as np
-from . CB_inference import InferenceEngine, PreComputation
+from . CB_inference import InferenceEngine, PreComputation, Evaluation
 from . CBR import retrieval, adaptation
+from . recommendation import make_recommendations
 
 
 distances_def = [retrieval.dist2, retrieval.dist3, retrieval.dist5]
@@ -23,9 +24,14 @@ class AI_Teacher:
     
     def __init__(self,
                  CB_path,
-                 questions):
+                 questions, 
+                 correct_answers):
         self.X_CB, self.Y_CB = load_CB(CB_path)
         self.precomputation = PreComputation(self.X_CB, self.Y_CB, questions, distances_def)
+        print(self.precomputation.a_solutions)
+        
+        self.questions = questions
+        self.correct_answers = correct_answers
         
         # Initialization of the priors
         prior_cb = .5 * np.ones(len(self.X_CB))
@@ -47,7 +53,16 @@ class AI_Teacher:
 
 
     def predict_CB(self, n_data):
-        return np.argpartition(self.inference.probas_cb, -n_data)
+        idx_highest = np.argpartition(self.inference.probas_cb, -n_data)[-n_data:]
+        idx_pos = np.argwhere(self.inference.probas_cb > 0.5)
+        return list(np.intersect1d(idx_highest, idx_pos))
     
-    def give_recommendations(self, n_recommendations):
-        return list(range(n_recommendations))
+    def give_recommendations(self, n_recommendations, predictions):
+        evaluation = Evaluation(self.questions, self.correct_answers, self.precomputation)
+        return make_recommendations(self.inference,
+                                    evaluation,
+                                    n_recommendations,
+                                    0,
+                                    0,
+                                    len(self.X_CB),
+                                    predictions)
