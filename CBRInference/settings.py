@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "evaluation",
     "ai_process",
     "conclusion",
+    "explanations",
 ]
 
 MIDDLEWARE = [

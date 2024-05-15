@@ -25,4 +25,5 @@ urlpatterns = [
     path("evaluation/", include("evaluation.urls", namespace="evaluation")),
     path("ai_process/", include("ai_process.urls", namespace="ai_process")),
     path("conclusion/", include("conclusion.urls", namespace="conclusion")),
+    path("explanations/", include("explanations.urls", namespace="explanations")),
 ]

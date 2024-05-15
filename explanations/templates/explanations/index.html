@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{%  load static %}
+
+{% block content %}
+<div class = "box">
+    <div class="title-container">
+        <div class = "title">How does this work?</div>
+    </div>
+    <div class="main-text">
+        <p>
+          You may think that the teacher has a good knowledge of Finnish grammar, but it's not the case. The teacher has access to 
+          the available cards only, nothing more. So how can it work?
+        </p>
+        <p>
+          When you provide a solution to a problem, the teacher tries to determine how you came up with this solution. 
+          It builds what we call a <b>theory of mind</b> of the student (namely you). In practice, this is a model of how you make decisions.
+          In this context, the model is simple: the teacher assumes that, when seeing a new question, you look at your cards 
+          and pick the most similar one. Then, you <i>adapt</i> the solution to the problem on the card, to the current question.</p>
+        <p>
+          Since the teacher doesn't know which cards you have in your hand, it tries to <i>infer</i> this information. 
+          It associates each card to a probability of having this card. This probability is updated based on your answers, using
+          <b>Bayesian belief update</b>: the probability will get higher if the observation is consistent with having access to the card.</p>
+        <p>
+          In practice, this is very challenging, since various factors are unobserved: how do you adapt the answers? How do you judge that
+          two problems are similar? All these aspects must also be infered on the fly. The solution to this is a combination of well-chosen 
+          <b>cognitive models</b>, of <b>probabilistic machine learning</b> and of algorithmic tricks. 
+        </p>
+        <p>
+          To make the recommendations, the teacher uses what it learned about you to simulate how you would reason with new knowledge. The
+          cards to recommend are the cards that maximize your expected score at the quiz.
+        </p>
+    </div>
+    <div class="button-container">
+        <form class = "Demo_questionnaire" action="{% url 'intro:index' %}">
+          {% csrf_token %}
+          <button id="next-page-button" type="submit">New game</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var nextButton = document.getElementById('next-page-button');
+        
+        document.addEventListener('keypress', function(e) {
+            var keynum = e.keyCode || e.which;
+            if(keynum == 13) {
+                nextButton.click();
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}
+
+{% block script %}
+{% endblock script %}

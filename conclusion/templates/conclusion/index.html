@@ -18,9 +18,15 @@
           Don't forget that this is stil work in progress and that we are working hard on making this teacher smarter and more useful.</p>
     </div>
     <div class="button-container">
+        <form class = "Demo_questionnaire" action="{% url 'explanations:index' %}">
+          {% csrf_token %}
+          <button id="next-page-button" type="submit">Curious about how it works?</button>
+        </form>
+    </div>
+    <div class="button-container">
         <form class = "Demo_questionnaire" action="{% url 'intro:index' %}">
           {% csrf_token %}
-          <button id="next-page-button" type="submit">Start again</button>
+          <button id="start-again-button" type="submit">Start again</button>
         </form>
     </div>
 </div>
