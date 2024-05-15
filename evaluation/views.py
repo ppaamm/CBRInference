@@ -9,7 +9,7 @@ import csv
 from .models import Question
 
 
-def load_data(quiz_id):
+def load_data_deprecated(quiz_id):
     filename = "static/quiz/quiz-" + str(quiz_id) + ".csv"
     
     quiz = []
@@ -23,6 +23,35 @@ def load_data(quiz_id):
                 )
             quiz.append(created)
     return quiz
+
+
+def num2ls(num):
+    ls = []
+    i = 1
+    while num > 0:
+        num, r = divmod(num, 2)
+        if r == 1: ls.append(i-1)
+        i += 1
+    return ls
+
+
+def load_data(quiz_id):
+    filename = "static/quiz/questions.csv"
+    
+    quiz = []
+    
+    with open(filename) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            created = Question(
+                nominative=row[0],
+                inessive=row[1]
+                )
+            quiz.append(created)
+            
+    idx = num2ls(quiz_id)
+    
+    return [ quiz[i] for i in idx ]
     
 
 

@@ -28,7 +28,6 @@ class AI_Teacher:
                  correct_answers):
         self.X_CB, self.Y_CB = load_CB(CB_path)
         self.precomputation = PreComputation(self.X_CB, self.Y_CB, questions, distances_def)
-        print(self.precomputation.a_solutions)
         
         self.questions = questions
         self.correct_answers = correct_answers

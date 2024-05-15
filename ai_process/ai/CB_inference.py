@@ -327,5 +327,4 @@ class Evaluation:
                                 else:
                                     p += inference.proba_harmony * inference.probas_dist[d] * probas[d][v]
                 score += p / len(list_y)
-        print("Evaluation: ", score)
         return score / self.n_x
