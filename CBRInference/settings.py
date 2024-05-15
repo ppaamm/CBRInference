@@ -142,9 +142,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Settings of the demonstration:
     
-N_WORDS_TEST = 5
-N_CARDS = 3
+N_WORDS_TEST = 7
+N_CARDS = 5
 
-N_WORDS_PREDICTED = 4
+N_WORDS_PREDICTED = 5
 N_RECOMMENDATIONS = 3
 
