@@ -57,6 +57,34 @@ def recommendation_bruteforce(inference: InferenceEngine,
     return recos_by_n[np.argmax(scores_by_n)]
     
     
+    
+def recommendation_greedy(inference: InferenceEngine,
+                              evaluation: Evaluation,
+                              n_reco: int, 
+                              possible_cards: Set[int],
+                              current_score=0):
+    if n_reco == 0: return []
+    actions = []
+    scores = []
+    for card in possible_cards:
+        actions.append(card)
+        scores.append(evaluate_action(evaluation, (card,), inference))
+    
+    idx_action = np.argmax(scores)
+    if scores[idx_action] == current_score: return []
+    
+    
+    new_inference = copy.deepcopy(inference)
+    new_inference.probas_cb[idx_action] = 1
+    
+    new_possible_cards = copy.deepcopy(possible_cards)
+    new_possible_cards.remove(actions[idx_action])
+    
+    return [actions[idx_action]] + recommendation_greedy(new_inference, 
+                                                         evaluation, 
+                                                         n_reco-1,
+                                                         new_possible_cards, 
+                                                         scores[idx_action])
 
 
 
@@ -69,5 +97,5 @@ def make_recommendations(inference: InferenceEngine,
                          predicted_cards: List[int]):
     
     possible_cards = get_actions(n_cards, predicted_cards)
-    return recommendation_bruteforce(inference, evaluation, n_reco, possible_cards)
+    return recommendation_greedy(inference, evaluation, n_reco, possible_cards)
 
