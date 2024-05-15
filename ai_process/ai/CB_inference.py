@@ -140,9 +140,11 @@ class InferenceEngine:
     
     
     def _is_valid_solution(self, precomputation: PreComputation, idx_x: int, y: str):
-        validity_no_harmony = (y in [sol[idx_x] for sol in precomputation.a_solutions[0]])
-        validity_harmony = (y in [sol[idx_x] for sol in precomputation.a_solutions[1]])
-        return validity_no_harmony or validity_harmony
+        #validity_no_harmony = (y in [sol[idx_x] for sol in precomputation.a_solutions[0]])
+        validity_no_harmony = (y in precomputation.a_solutions[0][idx_x])
+        #validity_harmony = (y in [sol[idx_x] for sol in precomputation.a_solutions[1]])
+        
+        return validity_no_harmony
     
         
     

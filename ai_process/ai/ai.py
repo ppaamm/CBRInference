@@ -53,6 +53,7 @@ class AI_Teacher:
 
     def predict_CB(self, n_data):
         idx_highest = np.argpartition(self.inference.probas_cb, -n_data)[-n_data:]
+        print(self.inference.probas_cb)
         idx_pos = np.argwhere(self.inference.probas_cb > 0.5)
         return list(np.intersect1d(idx_highest, idx_pos))
     
