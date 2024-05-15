@@ -20,11 +20,23 @@
         <form class = "Demo_questionnaire" 
         action="{% url 'evaluation:index' session_id=session_id  quiz_id=quiz_id round_id=1%}">
           {% csrf_token %}
-          <button type="submit">New game</button>
+          <button id="next-page-button" type="submit">New game</button>
         </form>
     </div>
 </div>
 {% endblock %}
 
 {% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var nextButton = document.getElementById('next-page-button');
+        
+        document.addEventListener('keypress', function(e) {
+            var keynum = e.keyCode || e.which;
+            if(keynum == 13) {
+                nextButton.click();
+            }
+        });
+    });
+</script>
 {% endblock script %}

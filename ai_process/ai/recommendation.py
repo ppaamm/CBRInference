@@ -97,5 +97,5 @@ def make_recommendations(inference: InferenceEngine,
                          predicted_cards: List[int]):
     
     possible_cards = get_actions(n_cards, predicted_cards)
-    return recommendation_greedy(inference, evaluation, n_reco, possible_cards)
+    return recommendation_bruteforce(inference, evaluation, n_reco, possible_cards)
 

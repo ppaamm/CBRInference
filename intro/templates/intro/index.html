@@ -5,7 +5,7 @@
 {% block content %}
 <div class = "box">
     <div class="title-container">
-        <div class = "title">AI-assisted vocabulary learning</div>
+        <div class = "title">AI-assisted language learning</div>
     </div>
     <div class="subtitle-container">
         <div class = "subtitle">Demonstration for the group on Human-Centric Machine Learning</div>
@@ -14,7 +14,9 @@
         <p>
           This application is a demonstration of a research project developed in the research group
           on <b>Human-centric machine learning</b>. It is thought as an extension of the article
-          <i>Inferring Case-Based Reasoners’ Knowledge to Enhance Interactivity</i> (Murena & Al-Ghossein, 2021).</p>
+          <i>Inferring Case-Based Reasoners’ Knowledge to Enhance Interactivity</i> (Murena & Al-Ghossein, 2021).
+          It is still work in progress, so several aspects of this demonstration will be fixed and made better
+          in the future. </p>
         <p>
           This application is developped for demonstration purposes only. <b>No data will be collected during the demonstration.</b></p>
         <p>
@@ -23,10 +25,25 @@
     <div class="button-container">
         <form class = "Demo_questionnaire" action="{% url 'rules:index' %}">
           {% csrf_token %}
-          <button type="submit">New game</button>
+          <button id="next-page-button" type="submit">New game</button>
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var nextButton = document.getElementById('next-page-button');
+        
+        document.addEventListener('keypress', function(e) {
+            var keynum = e.keyCode || e.which;
+            if(keynum == 13) {
+                nextButton.click();
+            }
+        });
+    });
+</script>
+
+
 {% endblock %}
 
 {% block script %}

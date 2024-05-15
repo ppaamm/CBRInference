@@ -71,21 +71,30 @@
             var scoreContainer = document.getElementById('score-container');
             var quizContainer = document.getElementById('quiz');
             var scoreDisplayer = document.getElementById('score-displayer');
+            
+            var finishedQuiz = false;
+            var scoreDisplayed = false;
 
             function displayNextQuestion() {
+                
+                // Create HTML for question and input field
+                var html = '<p>Question ' + (currentQuestionIndex + 1) + ': ' + questions[currentQuestionIndex] + '</p>';
+                html += '<input type="text" name="answer_' + currentQuestionIndex + '" required>';
+                // Insert HTML into question container
+                nominativeText.innerHTML = questions[currentQuestionIndex];
+                // Empty textbox
+                answerTextbox.value = "";
+                answerTextbox.focus();
+            
                 if (currentQuestionIndex < questions.length - 1) {
                     sendButton.style.display = 'none';
                     scoreContainer.style.display = 'none';
                     nextButton.innerHTML = "Next question";
                     
-                    // Create HTML for question and input field
-                    var html = '<p>Question ' + (currentQuestionIndex + 1) + ': ' + questions[currentQuestionIndex] + '</p>';
-                    html += '<input type="text" name="answer_' + currentQuestionIndex + '" required>';
-                    // Insert HTML into question container
-                    nominativeText.innerHTML = questions[currentQuestionIndex];
-                    // Empty textbox
-                    answerTextbox.value = "";
+                    
                 } else {
+                    finishedQuiz = true;
+                    
                     // Create HTML for question and input field
                     var html = '<p>Question ' + (currentQuestionIndex + 1) + ': ' + questions[currentQuestionIndex] + '</p>';
                     html += '<input type="text" name="answer_' + currentQuestionIndex + '" required>';
@@ -100,6 +109,7 @@
                     sendButton.style.display = 'block';
                     // nextButton.innerHTML = "Finish the test";
                 }
+                
             }
 
             // Display first question when page loads
@@ -114,6 +124,21 @@
                 displayNextQuestion();
             });
             
+            
+            document.addEventListener('keypress', function(e) {
+                var keynum = e.keyCode || e.which;
+                if(keynum == 13) {
+                    if (!finishedQuiz) {
+                        nextButton.click();
+                    }
+                    else if (!scoreDisplayed) {
+                        sendButton.click();
+                    }
+                    else {
+                        submitButton.click();
+                    }
+                }
+            });
             
             
             sendButton.addEventListener('click', function() {
@@ -131,6 +156,8 @@
                 console.log(correct_answers.length);
 
                 scoreDisplayer.innerHTML = '<p>Score: ' + score + ' / ' + N + '</p>';
+                
+                scoreDisplayed = true;
                 
                 
                 function countEqualElements(A, B) {
@@ -159,7 +186,12 @@
             
             
             
+            
+            
             submitButton.addEventListener('click', function() {
+                
+               submitButton.disabled = true; 
+               submitButton.innerHTML = "The teacher is analysing your answers... It can take a few seconds, so please be patient!"
                 
                 var new_url = '/conclusion/index';
                 var round_id = '{{ round_id }}';

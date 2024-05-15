@@ -85,6 +85,10 @@ button:hover {
   opacity: 1;
 }
 
+button:disabled {
+  background-color: #A1B4D4;
+}
+
 .button-container {
   width: 100%;
   margin: 0 auto 20px;
